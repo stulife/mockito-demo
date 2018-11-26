@@ -33,4 +33,12 @@ public interface TestService {
      */
     String callInternalInstance();
 
+
+    /**
+     * Mock final方法
+     * @param a
+     * @return
+     */
+     Boolean callFinalMethod(ClassA a);
+
 }

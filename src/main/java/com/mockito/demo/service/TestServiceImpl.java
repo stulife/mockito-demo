@@ -34,6 +34,10 @@ public class TestServiceImpl implements  TestService {
         return user.getName();
     }
 
+    @Override
+    public Boolean callFinalMethod(ClassA a) {
+        return a.isAlive();
+    }
 
     /**
      * 当前月份

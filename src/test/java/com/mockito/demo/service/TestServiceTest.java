@@ -1,6 +1,5 @@
 package com.mockito.demo.service;
 
-import com.mockito.demo.DemoApplicationTests;
 import com.mockito.demo.entity.User;
 import com.mockito.demo.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,16 +18,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Date;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({DateUtils.class,TestServiceImpl.class, User.class})
+@PrepareForTest({DateUtils.class,TestServiceImpl.class, User.class,ClassA.class})
 @SpringBootTest
 @Slf4j
 public class TestServiceTest {
-
-
     @Autowired
     @InjectMocks//被注入mock对象的类一般是被测试类
     private TestServiceImpl testService;
-
 
     @Before
     public void setUp() {
@@ -57,15 +53,24 @@ public class TestServiceTest {
     @Test
     public void callVoidTest() {
         // 模拟 不执行void的方法
-        TestServiceImpl spy = PowerMockito.spy(new TestServiceImpl());
-        PowerMockito.doNothing().when(spy).callVoid();
-        spy.callVoid();
+        TestServiceImpl underTest = PowerMockito.spy(new TestServiceImpl());
+        PowerMockito.doNothing().when(underTest).callVoid();
+        underTest.callVoid();
+    }
+
+
+    @Test
+    public void callFinalTest() {
+        ClassA a = PowerMockito.mock(ClassA.class);
+        PowerMockito.when(a.isAlive()).thenReturn(true);
+        Boolean expected = testService.callFinalMethod(a);
+        Assert.assertEquals(expected, true);
     }
 
     @Test
     public void callInternalInstanceTest() throws Exception {
         User mockUser = new User();
-        mockUser.setName("newtest");
+        mockUser.setName("mock");
         PowerMockito.whenNew(User.class).withNoArguments().thenReturn(mockUser);
         String expected= testService.callInternalInstance();
         Assert.assertEquals(expected, mockUser.getName());
